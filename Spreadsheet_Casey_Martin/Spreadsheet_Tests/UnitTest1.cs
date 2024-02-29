@@ -29,7 +29,7 @@ namespace SpreadsheetEngine
         public void TestRowCountNormal()
         {
             Spreadsheet s = new Spreadsheet(6, 5);
-            Assert.That(s.RowCount(), Is.EqualTo(6), "Spreadsheet returned unexpected column count.");
+            Assert.That(s.RowCount(), Is.EqualTo(6), "Spreadsheet returned unexpected row count.");
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace SpreadsheetEngine
         public void TestRowCountZero()
         {
             Spreadsheet s = new Spreadsheet(0, 5);
-            Assert.That(s.RowCount(), Is.EqualTo(0), "Spreadsheet returned unexpected column count.");
+            Assert.That(s.RowCount(), Is.EqualTo(0), "Spreadsheet returned unexpected row count.");
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace SpreadsheetEngine
         [Test]
         public void TestGetCellNormal()
         {
-            Spreadsheet s = new Spreadsheet(0, 5);
+            Spreadsheet s = new Spreadsheet(5, 5);
             SpreadsheetCell newCell = new SpreadsheetCell(4, 3);
-            Assert.That(s.GetCell(4, 3).Value, Is.EqualTo(newCell.Value),  "Spreadsheet returned unexpected column count.");
+            Assert.That(s.GetCell(4, 3).Value, Is.EqualTo(newCell.Value),  "Spreadsheet returned cell value.");
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace SpreadsheetEngine
         public void TestGetCellNonexistant()
         {
             Spreadsheet s = new Spreadsheet(5, 5);
-            Assert.That(s.GetCell(6, 8), Is.EqualTo(null), "Spreadsheet returned unexpected column count.");
+            Assert.That(s.GetCell(6, 8), Is.EqualTo(null), "Spreadsheet returned unexpected cell value.");
         }
     }
 }

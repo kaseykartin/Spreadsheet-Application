@@ -17,6 +17,17 @@ namespace SpreadsheetEngine
         private Cell[,] cells;
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
+        /// </summary>
+        /// <param name="numRows">Cell row index.</param>
+        /// <param name="numColumns">Cell column index.</param>
+        public Spreadsheet(int numRows, int numColumns)
+        {
+            this.cells = new Cell[numRows, numColumns];
+            this.InitializeCells();
+        }
+
+        /// <summary>
         /// CellPropertyChanged event.
         /// </summary>
         public event PropertyChangedEventHandler CellPropertyChanged;
@@ -35,17 +46,6 @@ namespace SpreadsheetEngine
             }
 
             return this.cells[rowIndex, columnIndex];
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
-        /// </summary>
-        /// <param name="numRows">Cell row index.</param>
-        /// <param name="numColumns">Cell column index.</param>
-        public Spreadsheet(int numRows, int numColumns)
-        {
-            this.cells = new Cell[numRows, numColumns];
-            this.InitializeCells();
         }
 
         /// <summary>
@@ -81,12 +81,12 @@ namespace SpreadsheetEngine
             }
         }
 
-        //public class SpreadsheetCell : Cell
-        //{
+        // public class SpreadsheetCell : Cell
+        // {
         //    public SpreadsheetCell(int newRows, int newColumns)
         //        : base(newRows, newColumns)
         //    {
         //    }
-        //}
+        // }
     }
 }

@@ -54,7 +54,11 @@ namespace SpreadsheetEngine
 
             set
             {
-                if (value != this.Text)
+                if (value == this.text)
+                {
+                    return;
+                }
+                else
                 {
                     this.text = value; // update the field
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Text")); // invoke the propertychanged event
@@ -63,13 +67,26 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        /// Gets the cells evaluated text value.
+        /// Gets or sets the cells evaluated text value.
         /// </summary>
         public string Value
         {
             get
             {
                 return this.value;
+            }
+
+            protected internal set // so that only the spreadsheet class can set value
+            {
+                if (value == this.text)
+                {
+                    return;
+                }
+                else
+                {
+                    this.text = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Text")); ;
+                }
             }
         }
 
