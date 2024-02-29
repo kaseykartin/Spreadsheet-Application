@@ -41,5 +41,26 @@ namespace SpreadsheetEngine
             Spreadsheet s = new Spreadsheet(0, 5);
             Assert.That(s.RowCount(), Is.EqualTo(0), "Spreadsheet returned unexpected column count.");
         }
+
+        /// <summary>
+        /// Normal case for Spreadsheet GetCell method.
+        /// </summary>
+        [Test]
+        public void TestGetCellNormal()
+        {
+            Spreadsheet s = new Spreadsheet(0, 5);
+            SpreadsheetCell newCell = new SpreadsheetCell(4, 3);
+            Assert.That(s.GetCell(4, 3).Value, Is.EqualTo(newCell.Value),  "Spreadsheet returned unexpected column count.");
+        }
+
+        /// <summary>
+        /// Nonexistant case for Spreadsheet GetCell method.
+        /// </summary>
+        [Test]
+        public void TestGetCellNonexistant()
+        {
+            Spreadsheet s = new Spreadsheet(5, 5);
+            Assert.That(s.GetCell(6, 8), Is.EqualTo(null), "Spreadsheet returned unexpected column count.");
+        }
     }
 }

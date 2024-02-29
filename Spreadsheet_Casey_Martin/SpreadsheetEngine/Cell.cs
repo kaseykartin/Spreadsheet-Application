@@ -1,7 +1,11 @@
-﻿using System.ComponentModel;
+﻿// <copyright file="Cell.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace SpreadsheetEngine
 {
+    using System.ComponentModel;
+
     /// <summary>
     /// Spreadsheet cell class.
     /// </summary>
@@ -21,7 +25,7 @@ namespace SpreadsheetEngine
         private int columnIndex;
 
         /// <summary>
-        /// Initialized a new instance of the <see cref="Cell"/> class.
+        /// Initializes a new instance of the <see cref="Cell"/> class.
         /// </summary>
         /// <param name="rowIndex">Cell row index.</param>
         /// <param name="columnIndex">Cell column index.</param>
@@ -92,4 +96,3 @@ namespace SpreadsheetEngine
         }
     }
 }
-

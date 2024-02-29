@@ -1,3 +1,7 @@
+// <copyright file="Form1.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace Spreadsheet_Casey_Martin
 {
     /// <summary>
@@ -6,17 +10,26 @@ namespace Spreadsheet_Casey_Martin
     public partial class Form1 : Form
     {
         /// <summary>
-        /// Initializes a new instane of Form1 class.
+        /// Initializes a new instance of the <see cref="Form1"/> class.
         /// </summary>
         public Form1()
-#pragma warning restore SA1642 // Constructor summary documentation should begin with standard text
         {
             this.InitializeComponent();
+            this.InitializeDataGrid();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Will add code later
+            // this.InitializeDataGrid();
+        }
+
+        private void InitializeDataGrid()
+        {
+            this.dataGridView1.Columns.Clear();
+            this.dataGridView1.Rows.Clear();
+
+            this.AddColumns();
+            this.AddRows();
         }
 
         private void AddColumns()
@@ -38,7 +51,8 @@ namespace Spreadsheet_Casey_Martin
         {
             for (int i = 0; i <= 50; i++)
             {
-                this.dataGridView1.Rows.Add(i.ToString(), i.ToString()); // Add 50 rows
+                this.dataGridView1.Rows.Add();
+                this.dataGridView1.Rows[i].HeaderCell.Value = i.ToString();
             }
         }
     }
