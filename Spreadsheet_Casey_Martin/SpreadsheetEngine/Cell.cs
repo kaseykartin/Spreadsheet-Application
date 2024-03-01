@@ -60,8 +60,8 @@ namespace SpreadsheetEngine
                 }
                 else
                 {
-                    this.text = value; // update the field
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Text")); // invoke the propertychanged event
+                    this.text = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Text"));
                 }
             }
         }
@@ -78,14 +78,14 @@ namespace SpreadsheetEngine
 
             protected internal set // so that only the spreadsheet class can set value
             {
-                if (value == this.text)
+                if (value == this.value)
                 {
                     return;
                 }
                 else
                 {
-                    this.text = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Text")); ;
+                    this.value = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
                 }
             }
         }

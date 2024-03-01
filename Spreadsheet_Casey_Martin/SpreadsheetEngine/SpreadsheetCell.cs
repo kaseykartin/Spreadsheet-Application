@@ -1,13 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="SpreadsheetCell.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace SpreadsheetEngine
 {
+    /// <summary>
+    /// SpreadsheetCell class which inherits from Cell.
+    /// </summary>
     public class SpreadsheetCell : Cell
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpreadsheetCell"/> class.
+        /// </summary>
+        /// <param name="newRows">Row index within the spreadsheet.</param>
+        /// <param name="newColumns">Column index within the spreadsheet.</param>
         public SpreadsheetCell(int newRows, int newColumns)
             : base(newRows, newColumns)
         {

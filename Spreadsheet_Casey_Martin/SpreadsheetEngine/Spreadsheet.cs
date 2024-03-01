@@ -77,7 +77,37 @@ namespace SpreadsheetEngine
                 {
                     SpreadsheetCell newCell = new SpreadsheetCell(i, j); // Create new cell
                     this.cells[i, j] = newCell; // Insert the cell into the spreadsheet
+                    newCell.PropertyChanged += UpdateOnCellChanged;
                 }
+            }
+        }
+
+        private void UpdateOnCellChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("Text"))
+            {
+                SpreadsheetCell curCell = sender as SpreadsheetCell;
+                string newText = curCell.Text;
+
+                if (!newText.StartsWith("="))
+                {
+                    curCell.Value = newText;
+                }
+                else // "=B4" or "=<ColumnIndex><RowIndex>"
+                {
+                    char tempColumn = curCell.Text[1];
+                    int tempColumnIndex = tempColumn - 65; // https://stackoverflow.com/questions/1951517/convert-a-to-1-b-to-2-z-to-26-and-then-aa-to-27-ab-to-28-column-indexes-to
+
+                    string tempRow = curCell.Text.Substring(2);
+                    int tempRowIndex = int.Parse(tempRow);
+
+                    // Retrieve value from the cell at the specified index
+                    string newValue = this.cells[tempRowIndex, tempColumnIndex].Value;
+                    curCell.Value = newValue;
+                }
+
+                // Notify subscribers that the cell value has changed
+                this.CellPropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("Value"));
             }
         }
 
