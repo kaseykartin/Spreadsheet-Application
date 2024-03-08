@@ -9,6 +9,9 @@ namespace SpreadsheetEngine
     using System.Linq.Expressions;
     using NUnit.Framework.Internal;
 
+    /// <summary>
+    /// Test functions for spreadsheet application.
+    /// </summary>
     public class UnitTest1
     {
         /// <summary>
@@ -75,11 +78,22 @@ namespace SpreadsheetEngine
         // ------------------------------------------------------------
         // ################ EXPRESSION TREE TESTS #####################
         // ------------------------------------------------------------
+
+        /// <summary>
+        /// Test function to evaluate a normal expression.
+        /// </summary>
+        /// <param name="expression"> ecpression. </param>
+        /// <returns> The evaluated expression. </returns>
         public double TestEvaluateNormalCases(string expression)
         {
             ExpressionTree exp = new ExpressionTree(expression);
             return exp.Evaluate();
         }
+
+        /// <summary>
+        /// Test function to evaluate an invalid expression.
+        /// </summary>
+        /// <param name="expression"> Expression. </param>
         public void TestConstructInvalidExpression(string expression)
         {
             Assert.That(
@@ -87,6 +101,10 @@ namespace SpreadsheetEngine
                 Throws.TypeOf<System.Exception>());
         }
 
+        /// <summary>
+        /// Test function to evaluate unsopported operators.
+        /// </summary>
+        /// <param name="expression"> Expression. </param>
         [TestCase("4%2")]
         public void TestEvaluateUnsupportedOperator(string expression)
         {
@@ -96,6 +114,9 @@ namespace SpreadsheetEngine
                 Throws.TypeOf<System.Collections.Generic.KeyNotFoundException>());
         }
 
+        /// <summary>
+        /// Test function to evaluate for infinity.
+        /// </summary>
         [Test]
         public void TestInfinity()
         {
@@ -104,6 +125,9 @@ namespace SpreadsheetEngine
             Assert.True(double.IsInfinity(result));
         }
 
+        /// <summary>
+        /// Test function that includes variables with assigned values.
+        /// </summary>
         [Test]
         public void TestExpressionsWithVariableValues()
         {
@@ -116,6 +140,9 @@ namespace SpreadsheetEngine
             Assert.That(exp.Evaluate(), Is.EqualTo(17));
         }
 
+        /// <summary>
+        /// Test function for addition.
+        /// </summary>
         [Test]
         public void TestAdditionEvaluation()
         {
@@ -125,6 +152,9 @@ namespace SpreadsheetEngine
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
 
+        /// <summary>
+        /// Test functin for subtractoin.
+        /// </summary>
         [Test]
         public void TestSubtractionEvaluation()
         {
@@ -134,6 +164,9 @@ namespace SpreadsheetEngine
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
 
+        /// <summary>
+        /// Test function for multiplication.
+        /// </summary>
         [Test]
         public void TestMultiplicationEvaluation()
         {
@@ -143,6 +176,9 @@ namespace SpreadsheetEngine
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
 
+        /// <summary>
+        /// Test function for division.
+        /// </summary>
         [Test]
         public void TestDivisionEvaluation()
         {
@@ -152,24 +188,33 @@ namespace SpreadsheetEngine
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
 
+        /// <summary>
+        /// Test function for multiple additions.
+        /// </summary>
         [Test]
         public void TestMultipleAdditionEvaluation()
         {
-            string exp = "1 + 2 + 3";
+            string exp = "1+2+3";
             double expectedValue = 6.0;
             ExpressionTree tree = new ExpressionTree(exp);
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
 
+        /// <summary>
+        /// Test funciton for multiple subtractions.
+        /// </summary>
         [Test]
         public void TestMultipleSubtractionEvaluation()
         {
-            string exp = "10 - 1 - 3";
+            string exp = "10-1-3";
             double expectedValue = 6.0;
             ExpressionTree tree = new ExpressionTree(exp);
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
 
+        /// <summary>
+        /// Test function for multiple multiplications.
+        /// </summary>
         [Test]
         public void TestMultipleMultiplicationEvaluation()
         {
@@ -179,6 +224,9 @@ namespace SpreadsheetEngine
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
 
+        /// <summary>
+        /// Test function for multiple divisions.
+        /// </summary>
         [Test]
         public void TestMultipleDivisionEvaluation()
         {
@@ -188,6 +236,9 @@ namespace SpreadsheetEngine
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
 
+        /// <summary>
+        /// Test fuction for SetVariable() method.
+        /// </summary>
         [Test]
         public void TestSetVariable()
         {
@@ -197,6 +248,9 @@ namespace SpreadsheetEngine
             Assert.That(tree.Evaluate(), Is.EqualTo(8.0));
         }
 
+        /// <summary>
+        /// Test function for the divide by zero case.
+        /// </summary>
         [Test]
         public void TestDivideByZero()
         {
@@ -206,6 +260,9 @@ namespace SpreadsheetEngine
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
 
+        /// <summary>
+        /// Test function for subtracting into negative numbers.
+        /// </summary>
         [Test]
         public void TestSubtractIntoNegative()
         {
