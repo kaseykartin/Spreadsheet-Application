@@ -9,7 +9,7 @@ namespace SpreadsheetEngine
     using System.Linq.Expressions;
     using NUnit.Framework.Internal;
 
-    public class Tests
+    public class UnitTest1
     {
         /// <summary>
         /// Normal case for Spreadsheet ColumnCount method.
@@ -80,7 +80,6 @@ namespace SpreadsheetEngine
             ExpressionTree exp = new ExpressionTree(expression);
             return exp.Evaluate();
         }
-
         public void TestConstructInvalidExpression(string expression)
         {
             Assert.That(
@@ -183,7 +182,7 @@ namespace SpreadsheetEngine
         [Test]
         public void TestMultipleDivisionEvaluation()
         {
-            string exp = "20 / 2 / 2";
+            string exp = "20/2/2";
             double expectedValue = 6.0;
             ExpressionTree tree = new ExpressionTree(exp);
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
@@ -196,6 +195,24 @@ namespace SpreadsheetEngine
             ExpressionTree tree = new ExpressionTree(exp);
             tree.SetVariable("HELLO", 20);
             Assert.That(tree.Evaluate(), Is.EqualTo(8.0));
+        }
+
+        [Test]
+        public void TestDivideByZero()
+        {
+            string exp = "12/0";
+            double expectedValue = 12.0 / 0.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void TestSubtractIntoNegative()
+        {
+            string exp = "2-8";
+            double expectedValue = 2.0 - 8.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
     }
 }
