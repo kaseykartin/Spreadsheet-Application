@@ -116,5 +116,86 @@ namespace SpreadsheetEngine
             exp.SetVariable("B2", 2);
             Assert.That(exp.Evaluate(), Is.EqualTo(17));
         }
+
+        [Test]
+        public void TestAdditionEvaluation()
+        {
+            string exp = "1 + 2";
+            double expectedValue = 3.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void TestSubtractionEvaluation()
+        {
+            string exp = "2 - 1";
+            double expectedValue = 1.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void TestMultiplicationEvaluation()
+        {
+            string exp = "3 * 2";
+            double expectedValue = 6.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void TestDivisionEvaluation()
+        {
+            string exp = "6 / 2";
+            double expectedValue = 3.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void TestMultipleAdditionEvaluation()
+        {
+            string exp = "1 + 2 + 3";
+            double expectedValue = 6.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void TestMultipleSubtractionEvaluation()
+        {
+            string exp = "10 - 1 - 3";
+            double expectedValue = 6.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void TestMultipleMultiplicationEvaluation()
+        {
+            string exp = "1 * 2 * 3";
+            double expectedValue = 6.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void TestMultipleDivisionEvaluation()
+        {
+            string exp = "20 / 2 / 2";
+            double expectedValue = 6.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void TestSetVariable()
+        {
+            string exp = "HELLO-12";
+            ExpressionTree tree = new ExpressionTree(exp);
+            tree.SetVariable("HELLO", 20);
+            Assert.That(tree.Evaluate(), Is.EqualTo(8.0));
+        }
     }
 }

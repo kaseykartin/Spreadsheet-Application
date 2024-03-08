@@ -25,7 +25,14 @@ namespace SpreadsheetEngine
         /// <param name="expression"></param>
         public ExpressionTree(string expression)
         {
+            this.variables = new Dictionary<string, double>();
+            // this.root = this.ConstructTree(expression);
         }
+
+        //private ExpressionTreeNode ConstructTree(string expression)
+        //{
+            
+        //}
 
         /// <summary>
         /// Sets string variableName to double variableValue.
