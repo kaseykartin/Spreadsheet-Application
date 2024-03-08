@@ -77,7 +77,7 @@ namespace SpreadsheetEngine
                 {
                     SpreadsheetCell newCell = new SpreadsheetCell(i, j); // Create new cell
                     this.cells[i, j] = newCell; // Insert the cell into the spreadsheet
-                    newCell.PropertyChanged += UpdateOnCellChanged;
+                    newCell.PropertyChanged += this.UpdateOnCellChanged;
                 }
             }
         }

@@ -1,12 +1,12 @@
 // <copyright file="Form1.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
-
-using SpreadsheetEngine;
-using System.ComponentModel;
-
 namespace Spreadsheet_Casey_Martin
 {
+
+    using System.ComponentModel;
+    using SpreadsheetEngine;
+
     /// <summary>
     /// Form1 class.
     /// </summary>

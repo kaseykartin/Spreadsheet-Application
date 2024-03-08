@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34018.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spreadsheet_Casey_Martin", "Spreadsheet_Casey_Martin\Spreadsheet_Casey_Martin.csproj", "{15253E73-1DC0-40A6-BAF8-77C2E3DE9C01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spreadsheet_Casey_Martin", "Spreadsheet_Casey_Martin\Spreadsheet_Casey_Martin.csproj", "{15253E73-1DC0-40A6-BAF8-77C2E3DE9C01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetEngine", "SpreadsheetEngine\SpreadsheetEngine.csproj", "{C18BDD8E-ADFF-4E9F-AA09-4CBED6F587AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpreadsheetEngine", "SpreadsheetEngine\SpreadsheetEngine.csproj", "{C18BDD8E-ADFF-4E9F-AA09-4CBED6F587AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spreadsheet_Tests", "Spreadsheet_Tests\Spreadsheet_Tests.csproj", "{679F6BB4-8894-4ED2-B8E2-A818B47B382A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spreadsheet_Tests", "Spreadsheet_Tests\Spreadsheet_Tests.csproj", "{679F6BB4-8894-4ED2-B8E2-A818B47B382A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionTreeConsoleApp", "ExpressionTreeConsoleApp\ExpressionTreeConsoleApp.csproj", "{72F9D604-8CA4-403B-9DE8-92CBA59522E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{679F6BB4-8894-4ED2-B8E2-A818B47B382A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{679F6BB4-8894-4ED2-B8E2-A818B47B382A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{679F6BB4-8894-4ED2-B8E2-A818B47B382A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72F9D604-8CA4-403B-9DE8-92CBA59522E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72F9D604-8CA4-403B-9DE8-92CBA59522E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72F9D604-8CA4-403B-9DE8-92CBA59522E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72F9D604-8CA4-403B-9DE8-92CBA59522E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
