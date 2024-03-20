@@ -62,7 +62,7 @@ namespace SpreadsheetEngine
             Stack<ExpressionTreeNode> stack = new Stack<ExpressionTreeNode>();
             List<ExpressionTreeNode> postfixlist = this.PostfixOrder(expression);
 
-            foreach(ExpressionTreeNode curNode in postfixlist)
+            foreach (ExpressionTreeNode curNode in postfixlist)
             {
                 if (curNode.GetType().Equals(typeof(ConstantNode)) || curNode.GetType().Equals(typeof(VariableNode)))
                 {
@@ -116,7 +116,7 @@ namespace SpreadsheetEngine
                         OperatorNode curNode = nodeFactory.CreateOperatorNode(curChar);
                         OperatorNode nextNode = nodeFactory.CreateOperatorNode(stack.Peek());
 
-                        if (curNode.Precedence > nextNode.Precedence || 
+                        if (curNode.Precedence > nextNode.Precedence ||
                             (curNode.Precedence == nextNode.Precedence &&
                             curNode.Associativity == OperatorNode.Associative.Right))
                         {

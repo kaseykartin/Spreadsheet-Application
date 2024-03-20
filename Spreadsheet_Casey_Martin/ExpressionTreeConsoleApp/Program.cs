@@ -15,6 +15,7 @@ while (true)
     {
         Console.WriteLine("Enter new expression: ");
         curExpression = Console.ReadLine();
+        tree = new ExpressionTree(curExpression);
     }
     else if (input.Equals("2"))
     {
@@ -38,5 +39,4 @@ while (true)
     {
         Console.WriteLine("Invalid input, enter an integer 1-4");
     }
-        
 }

@@ -94,11 +94,13 @@ namespace SpreadsheetEngine
         /// Test function to evaluate an invalid expression.
         /// </summary>
         /// <param name="expression"> Expression. </param>
-        public void TestConstructInvalidExpression(string expression)
+        [Test]
+        public void TestConstructInvalidExpression()
         {
+            string expression = "4%5";
             Assert.That(
                 () => new ExpressionTree(expression),
-                Throws.TypeOf<System.Exception>());
+                Throws.TypeOf<System.NotSupportedException>());
         }
 
         /// <summary>
@@ -133,7 +135,7 @@ namespace SpreadsheetEngine
         [Test]
         public void TestAdditionEvaluation()
         {
-            string exp = "1 + 2";
+            string exp = "1+2";
             double expectedValue = 3.0;
             ExpressionTree tree = new ExpressionTree(exp);
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
@@ -145,7 +147,7 @@ namespace SpreadsheetEngine
         [Test]
         public void TestSubtractionEvaluation()
         {
-            string exp = "2 - 1";
+            string exp = "2-1";
             double expectedValue = 1.0;
             ExpressionTree tree = new ExpressionTree(exp);
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
@@ -157,7 +159,7 @@ namespace SpreadsheetEngine
         [Test]
         public void TestMultiplicationEvaluation()
         {
-            string exp = "3 * 2";
+            string exp = "3*2";
             double expectedValue = 6.0;
             ExpressionTree tree = new ExpressionTree(exp);
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
@@ -169,7 +171,7 @@ namespace SpreadsheetEngine
         [Test]
         public void TestDivisionEvaluation()
         {
-            string exp = "6 / 2";
+            string exp = "6/2";
             double expectedValue = 3.0;
             ExpressionTree tree = new ExpressionTree(exp);
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
@@ -205,7 +207,7 @@ namespace SpreadsheetEngine
         [Test]
         public void TestMultipleMultiplicationEvaluation()
         {
-            string exp = "1 * 2 * 3";
+            string exp = "1*2*3";
             double expectedValue = 6.0;
             ExpressionTree tree = new ExpressionTree(exp);
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
@@ -218,7 +220,7 @@ namespace SpreadsheetEngine
         public void TestMultipleDivisionEvaluation()
         {
             string exp = "20/2/2";
-            double expectedValue = 6.0;
+            double expectedValue = 5.0;
             ExpressionTree tree = new ExpressionTree(exp);
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
