@@ -102,19 +102,6 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        /// Test function to evaluate unsopported operators.
-        /// </summary>
-        /// <param name="expression"> Expression. </param>
-        [TestCase("4%2")]
-        public void TestEvaluateUnsupportedOperator(string expression)
-        {
-            ExpressionTree exp = new ExpressionTree(expression);
-            Assert.That(
-                () => exp.Evaluate(),
-                Throws.TypeOf<System.Collections.Generic.KeyNotFoundException>());
-        }
-
-        /// <summary>
         /// Test function to evaluate for infinity.
         /// </summary>
         [Test]

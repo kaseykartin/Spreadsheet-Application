@@ -28,7 +28,7 @@ namespace SpreadsheetEngine
         /// <param name="operation"> Char of the operator. </param>
         /// <returns> Corresponding operator node. </returns>
         /// <exception cref="NotSupportedException"> When an unsupported operator is input. </exception>
-        public OperatorNode Create(char operation)
+        public OperatorNode CreateOperatorNode(char operation)
         {
             switch (operation)
             {

@@ -15,7 +15,7 @@ namespace SpreadsheetEngine
     /// </summary>
     public class ExpressionTree
     {
-        private readonly Dictionary<char, int> precedenceDictionary = new Dictionary<char, int>()
+        private readonly Dictionary<char, int> operators = new Dictionary<char, int>() // Operator, Precedence.
         {
             { '+', 1 },
             { '-', 1 },
@@ -27,17 +27,15 @@ namespace SpreadsheetEngine
 
         private Dictionary<string, double> variables;
 
-        private string expression;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ExpressionTree"/> class.
         /// </summary>
         /// <param name="expression"> Expression. </param>
         public ExpressionTree(string expression)
         {
-            this.expression = this.PostfixOrder(expression);
+            this.variables = new Dictionary<string, double>();
 
-            // this.root = this.ConstructTree(expression);
+            this.root = this.ConstructTree(expression);
         }
 
         /// <summary>
@@ -47,7 +45,7 @@ namespace SpreadsheetEngine
         /// <param name="variableValue"> The double value variable. </param>
         public void SetVariable(string variableName, double variableValue)
         {
-            this.variables.Add(variableName, variableValue);
+            this.variables[variableName] = variableValue;
         }
 
         /// <summary>
@@ -59,76 +57,127 @@ namespace SpreadsheetEngine
             return this.root.Evaluate();
         }
 
-        // private ExpressionTreeNode ConstructTree(string expression)
-        // {
-        //    Stack<ExpressionTreeNode> stack = new Stack<ExpressionTreeNode>();
-        //    OperatorNodeFactory nodeFactory = new OperatorNodeFactory();
+        private ExpressionTreeNode ConstructTree(string expression)
+        {
+            Stack<ExpressionTreeNode> stack = new Stack<ExpressionTreeNode>();
+            List<ExpressionTreeNode> postfixlist = this.PostfixOrder(expression);
 
-        //    if (string.IsNullOrEmpty(expression))
-        //    {
-        //        return null;
-        //    }
+            foreach(ExpressionTreeNode curNode in postfixlist)
+            {
+                if (curNode.GetType().Equals(typeof(ConstantNode)) || curNode.GetType().Equals(typeof(VariableNode)))
+                {
+                    stack.Push(curNode);
+                }
+                else
+                {
+                    OperatorNode opNode = curNode as OperatorNode;
+                    opNode.Right = stack.Pop();
+                    opNode.Left = stack.Pop();
+                    stack.Push(opNode);
+                }
+            }
 
-        //    // Iterate through postfix expressoion
-        //    for (int expIndex = 0; expIndex < expression.Length - 1; expIndex++)
-        //    {
-        //        char c = expression[expIndex];
-        //        if (char.IsDigit(c))
-        //        {
-        //
-        //        }
-        //    }
-        //}
-        private string PostfixOrder(string expression)
+            return stack.Pop();
+        }
+
+        private List<ExpressionTreeNode> PostfixOrder(string expression)
         {
             Stack<char> stack = new Stack<char>();
             OperatorNodeFactory nodeFactory = new OperatorNodeFactory();
-            string postfixExp = string.Empty;
+            List<ExpressionTreeNode> postfixlist = new List<ExpressionTreeNode>();
 
-            for (int expIndex = 0; expIndex < expression.Length - 1;  expIndex++)
+            char[] expArray = expression.ToArray<char>();
+
+            for (int expIndex = 0; expIndex < expression.Length;  expIndex++)
             {
-                char c = expression[expIndex];
-
-                if (char.IsLetterOrDigit(c)) // Character is either part of a variable or a constant
+                char curChar = expArray[expIndex];
+                if (curChar == '(') // Start by checking for parenthesis
                 {
-                    while (expIndex < expression.Length && char.IsLetterOrDigit(expression[expIndex + 1]))
+                    stack.Push(curChar);
+                }
+                else if (curChar == ')')
+                {
+                    while (!stack.Peek().Equals("("))
                     {
-                        postfixExp += expression[expIndex];
-                        expIndex++;
+                        OperatorNode newOpNode = nodeFactory.CreateOperatorNode(stack.Pop());
+                        postfixlist.Add(newOpNode);
                     }
 
-                    postfixExp += expression[expIndex];
-                    postfixExp += " ";
+                    stack.Pop();
                 }
-                else // Character is an operator
+                else if (curChar == '+' || curChar == '-' || curChar == '/' || curChar == '*') // Now check for operators
                 {
-                    // OperatorNode curNode = nodeFactory.Create(c);
-                    if (stack.Count <= 0)
+                    if (stack.Count == 0 || stack.Peek().Equals('(')) // Stack is empty or we are inside parenthesis
                     {
-                        stack.Push(c);
+                        stack.Push(curChar);
                     }
                     else
                     {
-                        // If the operator has a lower or equal precedence to the top of the stack, pop. Then push.
-                        while (stack.Count > 0 && this.precedenceDictionary[c] <= this.precedenceDictionary[stack.Peek()])
-                        {
-                            postfixExp += stack.Pop();
-                            postfixExp += " ";
-                        }
+                        OperatorNode curNode = nodeFactory.CreateOperatorNode(curChar);
+                        OperatorNode nextNode = nodeFactory.CreateOperatorNode(stack.Peek());
 
-                        stack.Push(c);
+                        if (curNode.Precedence > nextNode.Precedence || 
+                            (curNode.Precedence == nextNode.Precedence &&
+                            curNode.Associativity == OperatorNode.Associative.Right))
+                        {
+                            stack.Push(curChar);
+                        }
+                        else
+                        {
+                            stack.Pop();
+                            postfixlist.Add(curNode);
+                            expIndex--;
+                        }
                     }
+                }
+                else if (char.IsDigit(curChar)) // Now checking for constants
+                {
+                    string constant = curChar.ToString();
+                    for (int i = expIndex + 1; i < expArray.Length; i++)
+                    {
+                        curChar = expArray[i];
+                        if (char.IsDigit(curChar))
+                        {
+                            constant += curChar.ToString();
+                            expIndex++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    postfixlist.Add(new ConstantNode(double.Parse(constant)));
+                }
+                else // Now checking for variables
+                {
+                    string variable = curChar.ToString();
+                    for (int i = expIndex + 1; i < expArray.Length; i++)
+                    {
+                        curChar = expArray[i];
+                        if (!(curChar == '+' || curChar == '-' || curChar == '/' || curChar == '*'))
+                        {
+                            variable += curChar.ToString();
+                            expIndex++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    postfixlist.Add(new VariableNode(variable, ref this.variables));
+                    this.variables[variable] = 0.0;
                 }
             }
 
-            // All operators on the stack should be popped now
             while (stack.Count > 0)
             {
-                postfixExp += stack.Pop();
-                postfixExp += " ";
+                OperatorNode newNode = nodeFactory.CreateOperatorNode(stack.Pop());
+                postfixlist.Add(newNode);
             }
 
-            return postfixExp;
+            return postfixlist;
         }
     }
 }

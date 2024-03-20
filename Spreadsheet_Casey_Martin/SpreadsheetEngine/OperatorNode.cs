@@ -18,7 +18,7 @@ namespace SpreadsheetEngine
         /// <summary>
         /// Associativity of an operator.
         /// </summary>
-        public enum Associativity
+        public enum Associative
         {
             /// <summary>
             /// Left associativity.
@@ -40,5 +40,15 @@ namespace SpreadsheetEngine
         /// Gets or sets Right ExpressionTreeNode.
         /// </summary>
         public ExpressionTreeNode Right { get; set; }
+
+        /// <summary>
+        /// Gets the precedence of the operator node.
+        /// </summary>
+        public abstract Associative Associativity { get; }
+
+        /// <summary>
+        /// Gets the precedence of the operator node.
+        /// </summary>
+        public abstract int Precedence { get; }
     }
 }

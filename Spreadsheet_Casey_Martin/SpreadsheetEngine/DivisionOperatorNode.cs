@@ -25,7 +25,12 @@ namespace SpreadsheetEngine
         /// <summary>
         /// Gets associativity for operator (shunting yard).
         /// </summary>
-        public static Associativity Association => Associativity.Left;
+        public override Associative Associativity => Associative.Left;
+
+        /// <summary>
+        /// Gets the precedence of the operator node.
+        /// </summary>
+        public override int Precedence => 1;
 
         /// <inheritdoc/>
         public override double Evaluate() => this.Left.Evaluate() / this.Right.Evaluate();
