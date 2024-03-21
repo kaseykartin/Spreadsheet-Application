@@ -97,7 +97,7 @@ namespace SpreadsheetEngine
                 }
                 else if (curChar == ')')
                 {
-                    while (!stack.Peek().Equals("("))
+                    while (!stack.Peek().Equals('('))
                     {
                         OperatorNode newOpNode = nodeFactory.CreateOperatorNode(stack.Pop());
                         postfixlist.Add(newOpNode);
@@ -125,7 +125,7 @@ namespace SpreadsheetEngine
                         else
                         {
                             stack.Pop();
-                            postfixlist.Add(curNode);
+                            postfixlist.Add(nextNode);
                             expIndex--;
                         }
                     }

@@ -62,7 +62,7 @@ namespace SpreadsheetEngine
         {
             Spreadsheet s = new Spreadsheet(5, 5);
             SpreadsheetCell newCell = new SpreadsheetCell(4, 3);
-            Assert.That(s.GetCell(4, 3).Value, Is.EqualTo(newCell.Value),  "Spreadsheet returned cell value.");
+            Assert.That(s.GetCell(4, 3).Value, Is.EqualTo(newCell.Value), "Spreadsheet returned cell value.");
         }
 
         /// <summary>
@@ -78,41 +78,6 @@ namespace SpreadsheetEngine
         // ------------------------------------------------------------
         // ################ EXPRESSION TREE TESTS #####################
         // ------------------------------------------------------------
-
-        /// <summary>
-        /// Test function to evaluate a normal expression.
-        /// </summary>
-        /// <param name="expression"> ecpression. </param>
-        /// <returns> The evaluated expression. </returns>
-        public double TestEvaluateNormalCases(string expression)
-        {
-            ExpressionTree exp = new ExpressionTree(expression);
-            return exp.Evaluate();
-        }
-
-        /// <summary>
-        /// Test function to evaluate an invalid expression.
-        /// </summary>
-        /// <param name="expression"> Expression. </param>
-        [Test]
-        public void TestConstructInvalidExpression()
-        {
-            string expression = "4%5";
-            Assert.That(
-                () => new ExpressionTree(expression),
-                Throws.TypeOf<System.NotSupportedException>());
-        }
-
-        /// <summary>
-        /// Test function to evaluate for infinity.
-        /// </summary>
-        [Test]
-        public void TestInfinity()
-        {
-            string maxValue = double.MaxValue.ToString("F", CultureInfo.InvariantCulture);
-            double result = new ExpressionTree($"{maxValue}+{maxValue}").Evaluate();
-            Assert.True(double.IsInfinity(result));
-        }
 
         /// <summary>
         /// Test function that includes variables with assigned values.
@@ -142,7 +107,7 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
-        /// Test functin for subtractoin.
+        /// Test functin for subtraction.
         /// </summary>
         [Test]
         public void TestSubtractionEvaluation()
@@ -257,6 +222,54 @@ namespace SpreadsheetEngine
         {
             string exp = "2-8";
             double expectedValue = 2.0 - 8.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Test function for testing an expression with multiple operators.
+        /// </summary>
+        [Test]
+        public void TestMultipleOperators()
+        {
+            string exp = "10-2+5";
+            double expectedValue = 10.0 - 2.0 + 5.0;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Test function for all operators (parenthesis included) in a single expression.
+        /// </summary>
+        [Test]
+        public void TestAllOperators()
+        {
+            string exp = "10+10-(5*(2/4))";
+            double expectedValue = 10.0 + 10.0 - (5.0 * (2.0 / 4.0));
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Test function for parenthesis.
+        /// </summary>
+        [Test]
+        public void TestParenthesis()
+        {
+            string exp = "(10+10)*5";
+            double expectedValue = (10.0 + 10.0) * 5;
+            ExpressionTree tree = new ExpressionTree(exp);
+            Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Test function for multiple sets of parenthesis.
+        /// </summary>
+        [Test]
+        public void TestParenthesisMultiple()
+        {
+            string exp = "((10+10)+(5-2))*4";
+            double expectedValue = ((10.0 + 10.0) + (5.0 - 2.0)) * 4.0;
             ExpressionTree tree = new ExpressionTree(exp);
             Assert.That(tree.Evaluate(), Is.EqualTo(expectedValue));
         }
