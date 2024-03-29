@@ -52,7 +52,7 @@
             button1.TabIndex = 1;
             button1.Text = "Run Demo";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            button1.Click += new System.EventHandler(Button1_Click);
             // 
             // Form1
             // 
@@ -63,6 +63,7 @@
             Controls.Add(dataGridView1);
             Name = "Form1";
             Text = "Form1";
+            Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
         }

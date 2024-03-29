@@ -14,7 +14,7 @@ namespace SpreadsheetEngine
         /// <summary>
         /// 2D Array of cells.
         /// </summary>
-        private Cell[,] cells;
+        private SpreadsheetCell[,] cells;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
@@ -23,7 +23,7 @@ namespace SpreadsheetEngine
         /// <param name="numColumns">Cell column index.</param>
         public Spreadsheet(int numRows, int numColumns)
         {
-            this.cells = new Cell[numRows, numColumns];
+            this.cells = new SpreadsheetCell[numRows, numColumns];
             this.InitializeCells();
         }
 
@@ -38,7 +38,7 @@ namespace SpreadsheetEngine
         /// <param name="rowIndex">Cell row index.</param>
         /// <param name="columnIndex">Cell column index.</param>
         /// /// <returns>The cell at the specified index.</returns>
-        public Cell GetCell(int rowIndex, int columnIndex)
+        public SpreadsheetCell GetCell(int rowIndex, int columnIndex)
         {
             if (rowIndex > this.RowCount() || rowIndex < 0 || columnIndex > this.ColumnCount() || columnIndex < 0) // The desired cell doesnt exist
             {
