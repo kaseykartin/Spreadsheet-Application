@@ -28,13 +28,12 @@ namespace Spreadsheet_Casey_Martin
         private void Form1_Load(object sender, EventArgs e)
         {
             this.InitializeDataGrid();
-            //this.InitializeDataGridCells();
 
-            this.dataGridView1.CellBeginEdit += this.dataGridView1_CellBeginEdit;
-            this.dataGridView1.CellEndEdit += this.dataGridView1_CellEndEdit;
+            this.dataGridView1.CellBeginEdit += this.DataGridView1_CellBeginEdit;
+            this.dataGridView1.CellEndEdit += this.DataGridView1_CellEndEdit;
         }
 
-        private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        private void DataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
             DataGridViewCell dataGridViewCell = this.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
             SpreadsheetCell spreadsheetCell = this.spreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
@@ -42,7 +41,7 @@ namespace Spreadsheet_Casey_Martin
             dataGridViewCell.Value = spreadsheetCell.Text;
         }
 
-        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        private void DataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             DataGridViewCell dataGridViewCell = this.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
             SpreadsheetCell spreadsheetCell = this.spreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
@@ -62,20 +61,6 @@ namespace Spreadsheet_Casey_Martin
             this.spreadsheet = new Spreadsheet(50, 26);
             this.spreadsheet.CellPropertyChanged += this.UpdateCell;
         }
-
-        //private void InitializeDataGridCells()
-        //{
-        //    for (int i = 0; i < this.dataGridView1.Rows.Count; i++)
-        //    {
-        //        for (int j = 0; j < this.dataGridView1.Columns.Count; j++)
-        //        {
-        //            DataGridViewCell dataGridViewCell = this.dataGridView1.Rows[i].Cells[j];
-        //            SpreadsheetCell spreadsheetCell = this.spreadsheet.GetCell(i, j);
-
-        //            dataGridViewCell.Value = spreadsheetCell.Value;
-        //        }
-        //    }
-        //}
 
         private void AddColumns()
         {

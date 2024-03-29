@@ -110,13 +110,5 @@ namespace SpreadsheetEngine
                 this.CellPropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("Value"));
             }
         }
-
-        // public class SpreadsheetCell : Cell
-        // {
-        //    public SpreadsheetCell(int newRows, int newColumns)
-        //        : base(newRows, newColumns)
-        //    {
-        //    }
-        // }
     }
 }

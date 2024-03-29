@@ -1,6 +1,11 @@
-﻿
+﻿// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+#pragma warning disable SA1200 // Using directives should be placed correctly
 using ExpressionTreeConsoleApp;
 using SpreadsheetEngine;
+#pragma warning restore SA1200 // Using directives should be placed correctly
 
 string curExpression = "A1-12-C1";
 ExpressionTree tree = new ExpressionTree(curExpression);
