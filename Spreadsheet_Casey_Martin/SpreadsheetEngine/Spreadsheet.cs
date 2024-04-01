@@ -5,6 +5,7 @@
 namespace SpreadsheetEngine
 {
     using System.ComponentModel;
+    using System.Reflection.Emit;
 
     /// <summary>
     /// Spreadsheet class.
@@ -95,15 +96,18 @@ namespace SpreadsheetEngine
                 }
                 else // "=B4" or "=<ColumnIndex><RowIndex>"
                 {
-                    char tempColumn = curCell.Text[1];
-                    int tempColumnIndex = tempColumn - 65; // https://stackoverflow.com/questions/1951517/convert-a-to-1-b-to-2-z-to-26-and-then-aa-to-27-ab-to-28-column-indexes-to
+                    // char tempColumn = curCell.Text[1];
+                    // int tempColumnIndex = tempColumn - 65; // https://stackoverflow.com/questions/1951517/convert-a-to-1-b-to-2-z-to-26-and-then-aa-to-27-ab-to-28-column-indexes-to
 
-                    string tempRow = curCell.Text.Substring(2);
-                    int tempRowIndex = int.Parse(tempRow);
+                    // string tempRow = curCell.Text.Substring(2);
+                    // int tempRowIndex = int.Parse(tempRow);
 
-                    // Retrieve value from the cell at the specified index
-                    string newValue = this.cells[tempRowIndex, tempColumnIndex].Value;
-                    curCell.Value = newValue;
+                    //// Retrieve value from the cell at the specified index
+                    // string newValue = this.cells[tempRowIndex, tempColumnIndex].Value;
+                    // curCell.Value = newValue;
+                    newText = newText.Substring(1); // Remove the "=" for the expression to be inserted into treeeeeeeee
+                    ExpressionTree newTree = new ExpressionTree(newText);
+                    curCell.Value = newTree.Evaluate().ToString();
                 }
 
                 // Notify subscribers that the cell value has changed
