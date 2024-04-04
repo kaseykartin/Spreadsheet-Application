@@ -17,6 +17,11 @@ namespace Spreadsheet_Casey_Martin
         private Spreadsheet spreadsheet;
 
         /// <summary>
+        /// Dialog box for selecting cell color.
+        /// </summary>
+        private ColorDialog colorDialog;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Form1"/> class.
         /// </summary>
         public Form1()
@@ -31,6 +36,8 @@ namespace Spreadsheet_Casey_Martin
 
             this.dataGridView1.CellBeginEdit += this.DataGridView1_CellBeginEdit;
             this.dataGridView1.CellEndEdit += this.DataGridView1_CellEndEdit;
+
+            this.colorDialog = new ColorDialog();
         }
 
         private void DataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
@@ -88,12 +95,17 @@ namespace Spreadsheet_Casey_Martin
 
         private void UpdateCell(object sender, PropertyChangedEventArgs e)
         {
+            SpreadsheetCell curCell = sender as SpreadsheetCell;
+            DataGridViewCell dCell = this.dataGridView1.Rows[curCell.RowIndex].Cells[curCell.ColumnIndex];
+
             if (e.PropertyName.Equals("Value"))
             {
-                SpreadsheetCell curCell = sender as SpreadsheetCell;
-                DataGridViewCell dCell = this.dataGridView1.Rows[curCell.RowIndex].Cells[curCell.ColumnIndex];
-
                 dCell.Value = curCell.Value;
+            }
+            else if (e.PropertyName.Equals("bgColor"))
+            {
+                Color newColor = Color.FromArgb((int)curCell.BGColor);
+                dCell.Style.BackColor = newColor;
             }
         }
 
@@ -122,6 +134,21 @@ namespace Spreadsheet_Casey_Martin
             {
                 Cell curCell = this.spreadsheet.GetCell(i, 0);
                 curCell.Text = "=B" + i.ToString();
+            }
+        }
+
+        private void ChangeBackgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                foreach (DataGridViewCell dgCell in this.dataGridView1.SelectedCells)
+                {
+                    SpreadsheetCell ssCell = this.spreadsheet.GetCell(dgCell.RowIndex, dgCell.ColumnIndex);
+
+                    uint newColor = (uint)this.colorDialog.Color.ToArgb();
+
+                    ssCell.BGColor = newColor;
+                }
             }
         }
     }

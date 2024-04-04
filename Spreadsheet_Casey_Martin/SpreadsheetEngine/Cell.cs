@@ -21,6 +21,8 @@ namespace SpreadsheetEngine
         /// </summary>
         protected string value;
 
+        protected uint bgColor;
+
         private int rowIndex;
         private int columnIndex;
 
@@ -33,6 +35,9 @@ namespace SpreadsheetEngine
         {
             this.text = string.Empty;
             this.value = string.Empty;
+
+            this.bgColor = 0xFFFFFFFF;
+
             this.rowIndex = rowIndex;
             this.columnIndex = columnIndex;
         }
@@ -81,6 +86,23 @@ namespace SpreadsheetEngine
         {
             this.value = newValue;
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
+        }
+
+        public uint BGColor
+        {
+            get
+            {
+                return this.bgColor;
+            }
+
+            set
+            {
+                if (value != this.bgColor)
+                {
+                    this.bgColor = value;
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("bgColor"));
+                }
+            }
         }
 
         /// <summary>

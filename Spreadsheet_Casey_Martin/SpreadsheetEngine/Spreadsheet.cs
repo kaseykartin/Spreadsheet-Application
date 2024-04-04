@@ -78,17 +78,21 @@ namespace SpreadsheetEngine
                 {
                     SpreadsheetCell newCell = new SpreadsheetCell(i, j); // Create new cell
                     this.cells[i, j] = newCell; // Insert the cell into the spreadsheet
-                    newCell.PropertyChanged += this.UpdateOnCellTextChanged;
+                    newCell.PropertyChanged += this.UpdateOnCellChanged;
                     newCell.DependentCellValueChanged += this.UpdateOnDependentCellValueChanged;
                 }
             }
         }
 
-        private void UpdateOnCellTextChanged(object sender, PropertyChangedEventArgs e)
+        private void UpdateOnCellChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals("Text"))
             {
                 this.UpdateCellValue(sender as SpreadsheetCell);
+            }
+            if (e.PropertyName.Equals("bgColor"))
+            {
+                this.CellPropertyChanged?.Invoke(sender as SpreadsheetCell, new PropertyChangedEventArgs("bgColor"));
             }
         }
 
