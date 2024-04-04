@@ -75,19 +75,12 @@ namespace SpreadsheetEngine
             {
                 return this.value;
             }
+        }
 
-            protected internal set // so that only the spreadsheet class can set value
-            {
-                if (value == this.value)
-                {
-                    return;
-                }
-                else
-                {
-                    this.value = value;
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
-                }
-            }
+        internal void SetValue(string newValue)
+        {
+            this.value = newValue;
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
         }
 
         /// <summary>

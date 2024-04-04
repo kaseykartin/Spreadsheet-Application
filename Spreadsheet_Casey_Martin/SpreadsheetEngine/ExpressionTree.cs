@@ -27,6 +27,8 @@ namespace SpreadsheetEngine
 
         private Dictionary<string, double> variables;
 
+        private List<string> variablesList;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ExpressionTree"/> class.
         /// </summary>
@@ -34,7 +36,7 @@ namespace SpreadsheetEngine
         public ExpressionTree(string expression)
         {
             this.variables = new Dictionary<string, double>();
-
+            this.variablesList = new List<string>();
             this.root = this.ConstructTree(expression);
         }
 
@@ -46,6 +48,15 @@ namespace SpreadsheetEngine
         public void SetVariable(string variableName, double variableValue)
         {
             this.variables[variableName] = variableValue;
+        }
+
+        /// <summary>
+        /// Returns the list of stored variables from the spreadsheet.
+        /// </summary>
+        /// <returns> The variableList stored within the tree. </returns>
+        public List<string> GetVariables()
+        {
+            return this.variablesList;
         }
 
         /// <summary>
@@ -167,7 +178,12 @@ namespace SpreadsheetEngine
                     }
 
                     postfixlist.Add(new VariableNode(variable, ref this.variables));
-                    this.variables[variable] = 0.0;
+
+                    // Add the variable to our list
+                    if (!this.variablesList.Contains(variable))
+                    {
+                        this.variablesList.Add(variable);
+                    }
                 }
             }
 

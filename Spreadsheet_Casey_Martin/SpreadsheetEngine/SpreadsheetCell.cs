@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System.ComponentModel;
+
 namespace SpreadsheetEngine
 {
     /// <summary>
@@ -17,6 +19,21 @@ namespace SpreadsheetEngine
         public SpreadsheetCell(int newRows, int newColumns)
             : base(newRows, newColumns)
         {
+        }
+
+        public event EventHandler DependentCellValueChanged;
+
+        public void SubToCellChange(Cell cell)
+        {
+            cell.PropertyChanged += this.UpdateOnDependentCellValueChanged;
+        }
+
+        private void UpdateOnDependentCellValueChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("Value"))
+            {
+                this.DependentCellValueChanged?.Invoke(this, new EventArgs());
+            }
         }
     }
 }

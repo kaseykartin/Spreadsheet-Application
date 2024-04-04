@@ -41,7 +41,7 @@ namespace SpreadsheetEngine
         /// /// <returns>The cell at the specified index.</returns>
         public SpreadsheetCell GetCell(int rowIndex, int columnIndex)
         {
-            if (rowIndex > this.RowCount() || rowIndex < 0 || columnIndex > this.ColumnCount() || columnIndex < 0) // The desired cell doesnt exist
+            if (rowIndex > this.RowCount() - 1 || rowIndex < 0 || columnIndex > this.ColumnCount() - 1 || columnIndex < 0) // The desired cell doesnt exist
             {
                 return null;
             }
@@ -78,41 +78,93 @@ namespace SpreadsheetEngine
                 {
                     SpreadsheetCell newCell = new SpreadsheetCell(i, j); // Create new cell
                     this.cells[i, j] = newCell; // Insert the cell into the spreadsheet
-                    newCell.PropertyChanged += this.UpdateOnCellChanged;
+                    newCell.PropertyChanged += this.UpdateOnCellTextChanged;
+                    newCell.DependentCellValueChanged += this.UpdateOnDependentCellValueChanged;
                 }
             }
         }
 
-        private void UpdateOnCellChanged(object sender, PropertyChangedEventArgs e)
+        private void UpdateOnCellTextChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals("Text"))
             {
-                SpreadsheetCell curCell = sender as SpreadsheetCell;
-                string newText = curCell.Text;
-
-                if (!newText.StartsWith("="))
-                {
-                    curCell.Value = newText;
-                }
-                else // "=B4" or "=<ColumnIndex><RowIndex>"
-                {
-                    // char tempColumn = curCell.Text[1];
-                    // int tempColumnIndex = tempColumn - 65; // https://stackoverflow.com/questions/1951517/convert-a-to-1-b-to-2-z-to-26-and-then-aa-to-27-ab-to-28-column-indexes-to
-
-                    // string tempRow = curCell.Text.Substring(2);
-                    // int tempRowIndex = int.Parse(tempRow);
-
-                    //// Retrieve value from the cell at the specified index
-                    // string newValue = this.cells[tempRowIndex, tempColumnIndex].Value;
-                    // curCell.Value = newValue;
-                    newText = newText.Substring(1); // Remove the "=" for the expression to be inserted into treeeeeeeee
-                    ExpressionTree newTree = new ExpressionTree(newText);
-                    curCell.Value = newTree.Evaluate().ToString();
-                }
-
-                // Notify subscribers that the cell value has changed
-                this.CellPropertyChanged?.Invoke(sender, new PropertyChangedEventArgs("Value"));
+                this.UpdateCellValue(sender as SpreadsheetCell);
             }
+        }
+
+        private void UpdateOnDependentCellValueChanged(object sender, EventArgs e)
+        {
+            this.UpdateCellValue(sender as SpreadsheetCell);
+        }
+
+        private void UpdateCellValue(SpreadsheetCell cell)
+        {
+            string newValue = cell.Text;
+
+            if (newValue.StartsWith("="))
+            {
+                newValue = this.EvaluateCell(cell).ToString();
+            }
+
+            cell.SetValue(newValue);
+
+            this.CellPropertyChanged?.Invoke(cell, new PropertyChangedEventArgs("Value"));
+        }
+
+        private double EvaluateCell(SpreadsheetCell cell)
+        {
+            string newText = cell.Text.Substring(1).Replace(" ", string.Empty); // Remove the "=" for the expression to be inserted into treeeeeeeee
+
+            ExpressionTree newTree = new ExpressionTree(newText);
+
+            this.CheckVariableCells(newTree, cell);
+
+            return newTree.Evaluate();
+        }
+
+        private void CheckVariableCells(ExpressionTree newTree, SpreadsheetCell newCell)
+        {
+            List<string> newVariables = newTree.GetVariables();
+            foreach (string variable in newVariables)
+            {
+                SpreadsheetCell varCell = this.GetVariableCell(variable);
+                double value = 0.0;
+                try
+                {
+                    value = double.Parse(varCell.Value);
+                }
+                catch (FormatException)
+                {
+                }
+
+                newTree.SetVariable(variable, value);
+
+                newCell.SubToCellChange(varCell);
+            }
+        }
+
+        private SpreadsheetCell GetVariableCell(string variable)
+        {
+            int rowIndex = -1, columnIndex = -1;
+
+            char[] alphabet =
+            {
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            };
+
+            try
+            {
+                char column = variable.ToCharArray()[0];
+                rowIndex = int.Parse(variable.Split(column)[1]);
+                columnIndex = Array.IndexOf(alphabet, column);
+            }
+            catch (FormatException)
+            {
+                throw new InvalidCellException("Invalid Cell");
+            }
+
+            return this.GetCell(rowIndex, columnIndex);
         }
     }
 }
