@@ -6,6 +6,7 @@ namespace SpreadsheetEngine
 {
     using System.ComponentModel;
     using System.Reflection.Emit;
+    using System.Reflection.Metadata.Ecma335;
 
     /// <summary>
     /// Spreadsheet class.
@@ -17,6 +18,10 @@ namespace SpreadsheetEngine
         /// </summary>
         private SpreadsheetCell[,] cells;
 
+        private Stack<Command> undos;
+
+        private Stack<Command> redos;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
         /// </summary>
@@ -26,6 +31,8 @@ namespace SpreadsheetEngine
         {
             this.cells = new SpreadsheetCell[numRows, numColumns];
             this.InitializeCells();
+            this.undos = new Stack<Command>();
+            this.redos = new Stack<Command>();
         }
 
         /// <summary>
@@ -68,6 +75,76 @@ namespace SpreadsheetEngine
         }
 
         /// <summary>
+        /// Executes and adds a command to the undo stack, resets redo stack.
+        /// </summary>
+        /// <param name="undo"> Command. </param>
+        public void AddUndo(Command undo)
+        {
+            undo.Execute();
+
+            this.undos.Push(undo);
+
+            while (this.redos.Count > 0)
+            {
+                this.redos.Pop();
+            }
+        }
+
+        /// <summary>
+        /// Pops and executes the next command in the undo stack, does nothing if stack is empty.
+        /// </summary>
+        public void ExecuteUndo()
+        {
+            if (this.undos.Count > 0)
+            {
+                Command undo = this.undos.Pop();
+                undo.Unexecute();
+                this.redos.Push(undo);
+            }
+        }
+
+        /// <summary>
+        /// Pops and executes the next command in the redo stack, does nothing if stack is empty.
+        /// </summary>
+        public void ExecuteRedo()
+        {
+            if (this.redos.Count > 0)
+            {
+                Command redo = this.redos.Pop();
+                redo.Execute();
+                this.undos.Push(redo);
+            }
+        }
+
+        /// <summary>
+        /// Gets the description for the next undo command.
+        /// </summary>
+        /// <returns> Undo command description. </returns>
+        public string GetUndoDesc()
+        {
+            return this.undos.Peek().Description;
+        }
+
+        /// <summary>
+        /// Gets the description for the next redo command.
+        /// </summary>
+        /// <returns> Redo descriptin. </returns>
+        public string GetRedoDesc()
+        {
+            return this.redos.Peek().Description;
+        }
+
+        public bool UndosIsEmpty()
+        {
+            return this.undos.Count <= 0;
+        }
+
+        public bool RedosIsEmpty()
+        {
+            return this.redos.Count <= 0;
+        }
+
+        /// <summary>
         /// Initializes the array of cells within the Spreadsheet.
         /// </summary>
         private void InitializeCells()
@@ -90,6 +167,7 @@ namespace SpreadsheetEngine
             {
                 this.UpdateCellValue(sender as SpreadsheetCell);
             }
+
             if (e.PropertyName.Equals("bgColor"))
             {
                 this.CellPropertyChanged?.Invoke(sender as SpreadsheetCell, new PropertyChangedEventArgs("bgColor"));
@@ -105,7 +183,7 @@ namespace SpreadsheetEngine
         {
             string newValue = cell.Text;
 
-            if (newValue.StartsWith("="))
+            if (newValue.StartsWith("=")) // newValue is an expression
             {
                 newValue = this.EvaluateCell(cell).ToString();
             }

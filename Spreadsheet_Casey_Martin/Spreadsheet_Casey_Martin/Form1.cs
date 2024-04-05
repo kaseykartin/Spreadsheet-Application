@@ -4,6 +4,7 @@
 namespace Spreadsheet_Casey_Martin
 {
     using System.ComponentModel;
+    using System.Windows.Forms.VisualStyles;
     using SpreadsheetEngine;
 
     /// <summary>
@@ -38,6 +39,8 @@ namespace Spreadsheet_Casey_Martin
             this.dataGridView1.CellEndEdit += this.DataGridView1_CellEndEdit;
 
             this.colorDialog = new ColorDialog();
+            this.UpdateUndoRedo();
+
         }
 
         private void DataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
@@ -53,7 +56,12 @@ namespace Spreadsheet_Casey_Martin
             DataGridViewCell dataGridViewCell = this.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
             SpreadsheetCell spreadsheetCell = this.spreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
 
-            spreadsheetCell.Text = dataGridViewCell.Value.ToString();
+            string newText = dataGridViewCell.Value.ToString();
+
+            TextCommand command = new TextCommand(spreadsheetCell, newText);
+            this.spreadsheet.AddUndo(command);
+            this.UpdateUndoRedo();
+
             dataGridViewCell.Value = spreadsheetCell.Value;
         }
 
@@ -141,14 +149,57 @@ namespace Spreadsheet_Casey_Martin
         {
             if (this.colorDialog.ShowDialog() == DialogResult.OK)
             {
+                uint newColor = (uint)this.colorDialog.Color.ToArgb();
+                List<SpreadsheetCell> cells = new List<SpreadsheetCell>();
+
                 foreach (DataGridViewCell dgCell in this.dataGridView1.SelectedCells)
                 {
                     SpreadsheetCell ssCell = this.spreadsheet.GetCell(dgCell.RowIndex, dgCell.ColumnIndex);
 
-                    uint newColor = (uint)this.colorDialog.Color.ToArgb();
-
-                    ssCell.BGColor = newColor;
+                    cells.Add(ssCell);
                 }
+
+                BGColorCommand command = new BGColorCommand(cells, newColor);
+                this.spreadsheet.AddUndo(command);
+
+                this.UpdateUndoRedo();
+            }
+        }
+
+        private void UndoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.spreadsheet.ExecuteUndo();
+            this.UpdateUndoRedo();
+        }
+
+        private void RedoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.spreadsheet.ExecuteRedo();
+            this.UpdateUndoRedo();
+        }
+
+        private void UpdateUndoRedo()
+        {
+            if (this.spreadsheet.UndosIsEmpty()) // Undo stack is empty, only display "Undo"
+            {
+                this.undoToolStripMenuItem.Enabled = false;
+                this.undoToolStripMenuItem.Text = "Undo";
+            }
+            else // Display "Undo" + next command description
+            {
+                this.undoToolStripMenuItem.Enabled = true;
+                this.undoToolStripMenuItem.Text = "Undo " + this.spreadsheet.GetUndoDesc();
+            }
+
+            if (this.spreadsheet.RedosIsEmpty()) // Repeat process for redo stack
+            {
+                this.redoToolStripMenuItem.Enabled = false;
+                this.redoToolStripMenuItem.Text = "Redo";
+            }
+            else
+            {
+                this.redoToolStripMenuItem.Enabled = true;
+                this.redoToolStripMenuItem.Text = "Redo " + this.spreadsheet.GetRedoDesc();
             }
         }
     }
