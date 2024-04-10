@@ -21,6 +21,9 @@ namespace SpreadsheetEngine
         /// </summary>
         protected string value;
 
+        /// <summary>
+        /// Cells background color.
+        /// </summary>
         protected uint bgColor;
 
         private int rowIndex;
@@ -82,12 +85,6 @@ namespace SpreadsheetEngine
             }
         }
 
-        internal void SetValue(string newValue)
-        {
-            this.value = newValue;
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
-        }
-
         public uint BGColor
         {
             get
@@ -103,6 +100,12 @@ namespace SpreadsheetEngine
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("bgColor"));
                 }
             }
+        }
+
+        internal void SetValue(string newValue)
+        {
+            this.value = newValue;
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
         }
 
         /// <summary>

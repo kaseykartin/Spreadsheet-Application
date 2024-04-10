@@ -40,7 +40,6 @@ namespace Spreadsheet_Casey_Martin
 
             this.colorDialog = new ColorDialog();
             this.UpdateUndoRedo();
-
         }
 
         private void DataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
@@ -201,6 +200,16 @@ namespace Spreadsheet_Casey_Martin
                 this.redoToolStripMenuItem.Enabled = true;
                 this.redoToolStripMenuItem.Text = "Redo " + this.spreadsheet.GetRedoDesc();
             }
+        }
+
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LoadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

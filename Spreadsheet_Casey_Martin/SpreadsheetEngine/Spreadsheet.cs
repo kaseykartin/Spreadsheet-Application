@@ -7,6 +7,8 @@ namespace SpreadsheetEngine
     using System.ComponentModel;
     using System.Reflection.Emit;
     using System.Reflection.Metadata.Ecma335;
+    using System.Xml;
+    using System.Xml.Linq;
 
     /// <summary>
     /// Spreadsheet class.
@@ -134,14 +136,105 @@ namespace SpreadsheetEngine
             return this.redos.Peek().Description;
         }
 
+        /// <summary>
+        /// Checks if undo stack is empty.
+        /// </summary>
+        /// <returns> true or false value. </returns>
         public bool UndosIsEmpty()
         {
             return this.undos.Count <= 0;
         }
 
+        /// <summary>
+        /// Checks if redo stack is empty.
+        /// </summary>
+        /// <returns> true or false value.</returns>
         public bool RedosIsEmpty()
         {
             return this.redos.Count <= 0;
+        }
+
+        /// <summary>
+        /// Saves the spreadsheet in XML format.
+        /// </summary>
+        /// <param name="dataStream"> Data stream. </param>
+        public void Save(Stream dataStream)
+        {
+            XmlWriter xWriter = XmlWriter.Create(dataStream);
+            xWriter.WriteStartDocument();
+            xWriter.WriteStartElement("spreadsheet");
+
+            foreach (SpreadsheetCell cell in this.cells)
+            {
+                uint bgColor = cell.BGColor;
+                string text = cell.Text;
+
+                // If the cell has any alterations
+                if (bgColor != 0xFFFFFFFF || text != string.Empty)
+                {
+                    string name = string.Empty + (cell.ColumnIndex + 65) + (cell.RowIndex + 1); // CI + 65 results in 0->A, 1->B, and so on
+
+                    xWriter.WriteStartElement("cell");
+                    xWriter.WriteAttributeString("name", name);
+
+                    if (bgColor != 0xFFFFFFFF) // Cell color was edited
+                    {
+                        xWriter.WriteStartElement("bgColor");
+                        xWriter.WriteString(bgColor.ToString("X"));
+                        xWriter.WriteEndElement();
+                    }
+
+                    if (text != string.Empty)
+                    {
+                        xWriter.WriteStartElement("text");
+                        xWriter.WriteString(text);
+                        xWriter.WriteEndElement();
+                    }
+
+                    xWriter.WriteEndElement();
+                }
+            }
+
+            xWriter.WriteEndElement();
+            xWriter.WriteEndDocument();
+            xWriter.Close();
+        }
+
+        public void Load(Stream dataStream)
+        {
+            XDocument document = XDocument.Load(dataStream);
+
+            if (document.Elements().ToArray()[0].Name == "spreadsheet")
+            {
+
+                // Create an array of cellements (cell elements)
+                XElement[] elements = document.Elements().Elements().ToArray();
+
+                for (int i = 0; i < elements.Length; i++)
+                {
+                    XElement element = elements[i];
+
+                    if (element.Name == "cell")
+                    {
+                        XAttribute name = element.Attribute(XName.Get("name"));
+                        SpreadsheetCell curCell = this.GetCellXML(name.Value);
+
+                        // Loops over each cell checking text and bgcolor
+                        foreach (XElement child in element.Elements())
+                        {
+                            if (child.Name == "text")
+                            {
+                                curCell.Text = child.Value;
+                            }
+
+                            else if (child.Name == "bgColor")
+                            {
+                                curCell.BGColor = Convert.ToUInt32(child.Value, 16);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -239,6 +332,30 @@ namespace SpreadsheetEngine
             {
                 char column = variable.ToCharArray()[0];
                 rowIndex = int.Parse(variable.Split(column)[1]);
+                columnIndex = Array.IndexOf(alphabet, column);
+            }
+            catch (FormatException)
+            {
+                throw new InvalidCellException("Invalid Cell");
+            }
+
+            return this.GetCell(rowIndex, columnIndex);
+        }
+
+        private SpreadsheetCell GetCellXML(string variable)
+        {
+            int rowIndex = -1, columnIndex = -1;
+
+            char[] alphabet =
+            {
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            };
+
+            try
+            {
+                char column = variable.ToCharArray()[0];
+                rowIndex = int.Parse(variable.Split(column)[1]) - 1;
                 columnIndex = Array.IndexOf(alphabet, column);
             }
             catch (FormatException)
