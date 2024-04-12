@@ -4,6 +4,7 @@
 namespace Spreadsheet_Casey_Martin
 {
     using System.ComponentModel;
+    using System.Windows.Forms;
     using System.Windows.Forms.VisualStyles;
     using SpreadsheetEngine;
 
@@ -204,12 +205,33 @@ namespace Spreadsheet_Casey_Martin
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+            saveFileDialog.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
+            saveFileDialog.FilterIndex = 1;
+
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Stream stream = saveFileDialog.OpenFile();
+                this.spreadsheet.Save(stream);
+                stream.Close();
+            }
 
         }
 
         private void LoadToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
 
+            openFileDialog.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Stream stream = openFileDialog.OpenFile();
+                this.spreadsheet.Load(stream);
+                stream.Close();
+            }
         }
     }
 }

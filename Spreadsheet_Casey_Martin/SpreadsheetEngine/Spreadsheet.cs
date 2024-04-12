@@ -160,6 +160,12 @@ namespace SpreadsheetEngine
         /// <param name="dataStream"> Data stream. </param>
         public void Save(Stream dataStream)
         {
+            char[] alphabet =
+            {
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            }; // Probably not the best way to do this but sleep deprivation says to do so.
+
             XmlWriter xWriter = XmlWriter.Create(dataStream);
             xWriter.WriteStartDocument();
             xWriter.WriteStartElement("spreadsheet");
@@ -172,7 +178,7 @@ namespace SpreadsheetEngine
                 // If the cell has any alterations
                 if (bgColor != 0xFFFFFFFF || text != string.Empty)
                 {
-                    string name = string.Empty + (cell.ColumnIndex + 65) + (cell.RowIndex + 1); // CI + 65 results in 0->A, 1->B, and so on
+                    string name = string.Empty + alphabet[cell.ColumnIndex] + (cell.RowIndex + 1);
 
                     xWriter.WriteStartElement("cell");
                     xWriter.WriteAttributeString("name", name);
@@ -226,7 +232,6 @@ namespace SpreadsheetEngine
                             {
                                 curCell.Text = child.Value;
                             }
-
                             else if (child.Name == "bgColor")
                             {
                                 curCell.BGColor = Convert.ToUInt32(child.Value, 16);
