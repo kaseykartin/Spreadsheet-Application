@@ -55,8 +55,13 @@ namespace Spreadsheet_Casey_Martin
         {
             DataGridViewCell dataGridViewCell = this.dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex];
             SpreadsheetCell spreadsheetCell = this.spreadsheet.GetCell(e.RowIndex, e.ColumnIndex);
+            string newText = null;
 
-            string newText = dataGridViewCell.Value.ToString();
+            if (dataGridViewCell.Value != null)
+            {
+                newText = dataGridViewCell.Value.ToString();
+            }
+
 
             TextCommand command = new TextCommand(spreadsheetCell, newText);
             this.spreadsheet.AddUndo(command);
@@ -216,7 +221,6 @@ namespace Spreadsheet_Casey_Martin
                 this.spreadsheet.Save(stream);
                 stream.Close();
             }
-
         }
 
         private void LoadToolStripMenuItem_Click(object sender, EventArgs e)

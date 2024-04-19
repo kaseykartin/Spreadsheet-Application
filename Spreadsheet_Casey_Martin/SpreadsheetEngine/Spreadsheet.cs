@@ -20,8 +20,14 @@ namespace SpreadsheetEngine
         /// </summary>
         private SpreadsheetCell[,] cells;
 
+        /// <summary>
+        /// Undo stack.
+        /// </summary>
         private Stack<Command> undos;
 
+        /// <summary>
+        /// Redo stack.
+        /// </summary>
         private Stack<Command> redos;
 
         /// <summary>
@@ -206,13 +212,16 @@ namespace SpreadsheetEngine
             xWriter.Close();
         }
 
+        /// <summary>
+        /// Load function.
+        /// </summary>
+        /// <param name="dataStream"> File loading from. </param>
         public void Load(Stream dataStream)
         {
             XDocument document = XDocument.Load(dataStream);
 
             if (document.Elements().ToArray()[0].Name == "spreadsheet")
             {
-
                 // Create an array of cellements (cell elements)
                 XElement[] elements = document.Elements().Elements().ToArray();
 
@@ -291,36 +300,68 @@ namespace SpreadsheetEngine
             this.CellPropertyChanged?.Invoke(cell, new PropertyChangedEventArgs("Value"));
         }
 
-        private double EvaluateCell(SpreadsheetCell cell)
+        private string EvaluateCell(SpreadsheetCell cell)
         {
             string newText = cell.Text.Substring(1).Replace(" ", string.Empty); // Remove the "=" for the expression to be inserted into treeeeeeeee
 
             ExpressionTree newTree = new ExpressionTree(newText);
 
-            this.CheckVariableCells(newTree, cell);
+            // this.CheckVariableCells(newTree, cell);
 
-            return newTree.Evaluate();
+            bool error = this.CheckVariableCells(newTree, cell);
+
+            if (!error)
+            {
+                return newTree.Evaluate().ToString();
+            }
+            else
+            {
+                return cell.Value;
+            }
+
         }
 
-        private void CheckVariableCells(ExpressionTree newTree, SpreadsheetCell newCell)
+        private bool CheckVariableCells(ExpressionTree newTree, SpreadsheetCell newCell)
         {
             List<string> newVariables = newTree.GetVariables();
+            bool error = false;
+
             foreach (string variable in newVariables)
             {
                 SpreadsheetCell varCell = this.GetVariableCell(variable);
-                double value = 0.0;
-                try
-                {
-                    value = double.Parse(varCell.Value);
-                }
-                catch (FormatException)
-                {
-                }
 
-                newTree.SetVariable(variable, value);
+                if (varCell == null)
+                {
+                    newCell.SetValue("!(bad reference)");
+                    error = true;
+                }
+                else if (newCell.Text == varCell.Text)
+                {
+                    newCell.SetValue("!(self reference)");
+                    error = true;
+                }
+                else if (this.ContainsCircularReference(newCell, varCell))
+                {
+                    newCell.SetValue("!(circular reference)");
+                    error = true;
+                }
+                else
+                {
+                    double value = 0.0;
 
-                newCell.SubToCellChange(varCell);
+                    try
+                    {
+                        value = double.Parse(varCell.Value);
+                    }
+                    catch (FormatException) { }
+
+                    newTree.SetVariable(variable, value);
+
+                    newCell.SubToCellChange(varCell);
+                }
             }
+
+            return error;
         }
 
         private SpreadsheetCell GetVariableCell(string variable)
@@ -369,6 +410,32 @@ namespace SpreadsheetEngine
             }
 
             return this.GetCell(rowIndex, columnIndex);
+        }
+
+        private bool ContainsCircularReference(SpreadsheetCell oldCell, SpreadsheetCell newCell)
+        {
+            if (newCell.Text.StartsWith('='))
+            {
+                ExpressionTree newTree = new ExpressionTree(newCell.Text.Substring(1).Replace(" ", string.Empty));
+                List<string> names = newTree.GetVariables();
+
+                foreach (string name in names)
+                {
+                    SpreadsheetCell curCell = this.GetVariableCell(name);
+                    if (curCell == oldCell)
+                    {
+                        return true;
+                    }
+
+                    bool circularReference = this.ContainsCircularReference(oldCell, curCell);
+                    if (circularReference)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
