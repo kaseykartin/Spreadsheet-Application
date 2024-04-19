@@ -31,6 +31,16 @@ namespace SpreadsheetEngine
         private Stack<Command> redos;
 
         /// <summary>
+        /// Character array used when working with cell names
+        /// </summary>
+        private char[] alphabet =
+            {
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            };
+
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Spreadsheet"/> class.
         /// </summary>
         /// <param name="numRows">Cell row index.</param>
@@ -368,17 +378,11 @@ namespace SpreadsheetEngine
         {
             int rowIndex = -1, columnIndex = -1;
 
-            char[] alphabet =
-            {
-                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-                'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            };
-
             try
             {
                 char column = variable.ToCharArray()[0];
                 rowIndex = int.Parse(variable.Split(column)[1]);
-                columnIndex = Array.IndexOf(alphabet, column);
+                columnIndex = Array.IndexOf(this.alphabet, column);
             }
             catch (FormatException)
             {
@@ -392,17 +396,11 @@ namespace SpreadsheetEngine
         {
             int rowIndex = -1, columnIndex = -1;
 
-            char[] alphabet =
-            {
-                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-                'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            };
-
             try
             {
                 char column = variable.ToCharArray()[0];
                 rowIndex = int.Parse(variable.Split(column)[1]) - 1;
-                columnIndex = Array.IndexOf(alphabet, column);
+                columnIndex = Array.IndexOf(this.alphabet, column);
             }
             catch (FormatException)
             {

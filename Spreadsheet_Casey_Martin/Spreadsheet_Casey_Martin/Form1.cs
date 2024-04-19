@@ -34,12 +34,26 @@ namespace Spreadsheet_Casey_Martin
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.ResetGrid();
             this.InitializeDataGrid();
 
             this.dataGridView1.CellBeginEdit += this.DataGridView1_CellBeginEdit;
             this.dataGridView1.CellEndEdit += this.DataGridView1_CellEndEdit;
 
             this.colorDialog = new ColorDialog();
+            this.UpdateUndoRedo();
+        }
+
+        private void ResetGrid()
+        {
+            this.dataGridView1.Columns.Clear();
+            this.AddColumns();
+            this.dataGridView1.Rows.Clear();
+            this.AddRows();
+
+            this.spreadsheet = new Spreadsheet(50, 26);
+            this.spreadsheet.CellPropertyChanged += this.UpdateCell;
+
             this.UpdateUndoRedo();
         }
 
@@ -61,7 +75,10 @@ namespace Spreadsheet_Casey_Martin
             {
                 newText = dataGridViewCell.Value.ToString();
             }
-
+            else if (dataGridViewCell.Value == null)
+            {
+                newText = string.Empty;
+            }
 
             TextCommand command = new TextCommand(spreadsheetCell, newText);
             this.spreadsheet.AddUndo(command);
@@ -232,6 +249,8 @@ namespace Spreadsheet_Casey_Martin
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                this.ResetGrid();
+
                 Stream stream = openFileDialog.OpenFile();
                 this.spreadsheet.Load(stream);
                 stream.Close();
